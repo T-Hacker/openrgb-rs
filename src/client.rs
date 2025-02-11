@@ -9,9 +9,9 @@ use tokio::sync::Mutex;
 use OpenRGBError::*;
 use PacketId::*;
 
-use crate::data::{Color, Controller, Mode, OpenRGBWritable, PacketId, RawString};
-use crate::OpenRGBError;
+use crate::data::{Color, Colors, Controller, Mode, OpenRGBWritable, PacketId, RawString};
 use crate::protocol::OpenRGBStream;
+use crate::OpenRGBError;
 
 /// Default protocol version used by [OpenRGB] client.
 pub static DEFAULT_PROTOCOL: u32 = 3;
@@ -165,13 +165,23 @@ impl<S: OpenRGBStream> OpenRGB<S> {
     /// Update LEDs.
     ///
     /// See [Open SDK documentation](https://gitlab.com/CalcProgrammer1/OpenRGB/-/wikis/OpenRGB-SDK-Documentation#net_packet_id_rgbcontroller_updateleds) for more information.
-    pub async fn update_leds(&self, controller_id: u32, colors: Vec<Color>) -> Result<(), OpenRGBError> {
-        self.stream.lock().await.write_packet(
-            self.protocol,
-            controller_id,
-            RGBControllerUpdateLeds,
-            (colors.size(self.protocol), colors),
-        ).await
+    pub async fn update_leds(
+        &self,
+        controller_id: u32,
+        colors: Vec<Color>,
+    ) -> Result<(), OpenRGBError> {
+        let colors: Colors = colors.into();
+
+        self.stream
+            .lock()
+            .await
+            .write_packet(
+                self.protocol,
+                controller_id,
+                RGBControllerUpdateLeds,
+                colors,
+            )
+            .await
     }
 
     /// Update a zone LEDs.

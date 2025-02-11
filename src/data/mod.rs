@@ -5,6 +5,7 @@ use async_trait::async_trait;
 
 pub use color::*;
 pub use color_mode::*;
+pub use colors::*;
 pub use controller::*;
 pub use device_type::*;
 pub use direction::*;
@@ -26,6 +27,7 @@ use crate::protocol::{OpenRGBReadableStream, OpenRGBWritableStream};
 mod controller;
 mod direction;
 mod color_mode;
+mod colors;
 mod device_type;
 mod zone_type;
 mod mode_flag;
